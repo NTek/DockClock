@@ -28,7 +28,7 @@ import java.util.ArrayList;
  */
 public class ClockActivity extends Activity {
 
-    private static final int DURATION = 5000;
+    private static final int DURATION = 15000;
     private PowerManager.WakeLock mWakeLock = null;
     private TextClock mClock = null;
     private ViewPager mViewPager = null;
@@ -78,7 +78,11 @@ public class ClockActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mHour = Integer.valueOf(mClock.getText().toString().split(":")[0]);
+                int lHour = Integer.valueOf(mClock.getText().toString().split(":")[0]);
+                if (mHour != lHour) {
+                    mHour = lHour;
+                    selectCurrentHour();
+                }
             }
 
             @Override
