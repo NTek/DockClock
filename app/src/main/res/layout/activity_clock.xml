@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <include layout="@layout/content_clock"/>
-</FrameLayout>
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/view_pager_height"
+        android:layout_above="@+id/clock"/>
+    <TextClock
+        android:id="@+id/clock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:textColor="@android:color/holo_blue_bright"
+        android:textSize="@dimen/text_size_clock"
+        android:textStyle="bold"
+        android:includeFontPadding="false"/>
+</RelativeLayout>
