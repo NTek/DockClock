@@ -89,6 +89,9 @@ public class ClockActivity extends Activity {
             public void afterTextChanged(Editable s) {
             }
         });
+        mViewPagerAdapter = new ViewPagerAdapter();
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        mViewPager.setAdapter(mViewPagerAdapter);
     }
 
     @Override
@@ -110,29 +113,34 @@ public class ClockActivity extends Activity {
     }
 
     private void initializeGSP() {
-        mViewPagerAdapter = new ViewPagerAdapter();
-        mViewPager = (ViewPager) findViewById(R.id.viewPager);
-        mViewPager.setAdapter(mViewPagerAdapter);
         new AsyncTask<Void, Void, ArrayList>() {
 
             @Override
             protected ArrayList doInBackground(Void... voids) {
-                ScheduleItem lValidationItem = HTMLContract.buildURL()
-                        .getValidation(RouteType.GRADSKI)
-                        .run().get(0);
-                ArrayList<ScheduleItem> lDirections = HTMLContract.buildURL().getDirections()
-                        .setRouteType(RouteType.GRADSKI).setValidation(lValidationItem)
-                        .setDay(DayType.RADNI_DAN)
-                        .run();
-                ArrayList<ScheduleItem> lTimeItems = HTMLContract.buildURL().getSchedules()
-                        .setRouteType(RouteType.GRADSKI).setDay(DayType.RADNI_DAN)
-                        .setValidation(
-                                lValidationItem).setDirection(lDirections.get(16)).run();
-                return lTimeItems;
+                try {
+                    ScheduleItem lValidationItem = HTMLContract.buildURL()
+                            .getValidation(RouteType.GRADSKI)
+                            .run().get(0);
+                    ArrayList<ScheduleItem> lDirections = HTMLContract.buildURL().getDirections()
+                            .setRouteType(RouteType.GRADSKI).setValidation(lValidationItem)
+                            .setDay(DayType.RADNI_DAN)
+                            .run();
+                    ArrayList<ScheduleItem> lTimeItems = HTMLContract.buildURL().getSchedules()
+                            .setRouteType(RouteType.GRADSKI).setDay(DayType.RADNI_DAN)
+                            .setValidation(
+                                    lValidationItem).setDirection(lDirections.get(16)).run();
+                    return lTimeItems;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
             }
 
             @Override
             protected void onPostExecute(ArrayList schedule) {
+                if (schedule == null) {
+                    return;
+                }
                 //vrati samo smer A.
                 mViewPagerAdapter.addItems(((TimeItem) schedule.get(0)).getHourItems());
                 selectCurrentHour();
@@ -151,6 +159,8 @@ public class ClockActivity extends Activity {
                 }
             }
             mViewPager.setCurrentItem(lHourIndex);
+        } else {
+            initializeGSP();
         }
     }
 }
